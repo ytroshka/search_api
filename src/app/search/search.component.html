@@ -1,0 +1,43 @@
+<form>
+  <input type="text" placeholder="what are you looking for?" (keyup)="searchAll(input.value)" #input>
+  <input type="reset" value="X" (click)="searchAll('')">
+</form>
+<div *ngIf="!items.length" class="no-items">No results</div>
+<div *ngIf="items.length && categories.length" class="categories">
+  <ul class="categories-list">
+    <li *ngFor="let category of categories" (click)="searchByCategory(input.value, category.item)"
+        class="categories-item"
+        [class.active]="category.item == selectedCategory">
+      {{category.item}} ({{category.count}})
+    </li>
+  </ul>
+</div>
+
+<ul *ngIf="items.length" class="items">
+  <li *ngFor="let item of items" class="item">
+    <a class="item-link" href="{{item.url_s}}">
+      <div class="item-content">
+        <div class="item-image-wrapper">
+          <img *ngIf="item.imageUrl_s" class="item-image" src="{{item.imageUrl_s}}">
+          <div *ngIf="item.duration_s" class="item-duration">{{item.duration_s}}</div>
+          <div *ngIf="item.labelName_s" class="item-label-name">{{item.labelName_s}}</div>
+          <div *ngIf="item.contentDate_dt" class="item-content-date">{{item.contentDate_dt | date}}</div>
+        </div>
+        <h2 class="item-title" [innerHtml]="item.title_t"></h2>
+      </div>
+    </a>
+  </li>
+</ul>
+
+<div class="buttons" *ngIf="items.length">
+  <button class="button" (click)="navigateToPrevious(input.value)" [disabled]="defOptions.start == '0'">previous</button>
+  <button class="button" (click)="navigateToNext(input.value)" [disabled]="defOptions.start >= numFound - defOptions.rows">next</button>
+  <span>{{defOptions.start / defOptions.rows + 1}} of {{getPageCount()}}</span>
+</div>
+
+<div class="buttons" *ngIf="items.length">
+  <button class="button" (click)="showItems(input.value, defOptionsRows)">{{defOptionsRows}}</button>
+  <button class="button" (click)="showItems(input.value, defOptionsRows * 2)">{{defOptionsRows * 2}}</button>
+  <button class="button" (click)="showItems(input.value, defOptionsRows * 4)">{{defOptionsRows * 4}}</button>
+  <span>elements on the page</span>
+</div>
